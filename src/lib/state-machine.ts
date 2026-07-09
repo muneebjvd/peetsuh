@@ -229,7 +229,7 @@ export function processMessage(
   }
 
   // Global intent interceptors (Tracking & Appreciation)
-  const globalMatch = matchIntent(input, ["TRACK_ORDER", "APPRECIATION"]);
+  const globalMatch = matchIntent(input);
   if (globalMatch.intentId === "TRACK_ORDER") {
     session.state = "TRACK_ORDER_INPUT";
     return {
