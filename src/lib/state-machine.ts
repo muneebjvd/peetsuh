@@ -228,6 +228,21 @@ export function processMessage(
     };
   }
 
+  // Global intent interceptors (Tracking & Appreciation)
+  const globalMatch = matchIntent(input, ["TRACK_ORDER", "APPRECIATION"]);
+  if (globalMatch.intentId === "TRACK_ORDER") {
+    session.state = "TRACK_ORDER_INPUT";
+    return {
+      text: "I can help you track your order! Please enter your 7-character Order Number (e.g., A1B2C3D):",
+    };
+  }
+  if (globalMatch.intentId === "APPRECIATION") {
+    return {
+      text: "You're very welcome! We're always happy to help. Let us know if you need anything else! 😊",
+      suggestions: ["Order now", "Track order", "See deals"],
+    };
+  }
+
   // Global language / banter interceptor
   if (lower.includes("urdu")) {
     return { text: "Sorry, I only understand English at the moment! 😅 How can I help you today?", suggestions: ["Show menu", "Place an order"] };

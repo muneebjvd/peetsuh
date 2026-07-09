@@ -115,8 +115,8 @@ export const INTENTS: Intent[] = [
   },
   {
     id: "TRACK_ORDER",
-    priority: 5,
-    triggers: ["track", "where is my order", "status", "track order", "track my order", "order status"],
+    priority: 20,
+    triggers: ["track", "status", "track order", "order status", "where order"],
   },
   {
     id: "APPRECIATION",
