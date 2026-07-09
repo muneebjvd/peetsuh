@@ -6,6 +6,7 @@ import type { MenuItem, PizzaItem, DrinkItem } from "@/lib/menu-data";
 import { useCartStore } from "@/store/cart-store";
 import Link from "next/link";
 import { ShoppingCart, Plus } from "lucide-react";
+import Image from "next/image";
 
 type Category = "deals" | "pizza" | "fries" | "drinks" | "sauces";
 
@@ -253,7 +254,7 @@ export default function ShopPage() {
               <div key={item.id} className="menu-card">
                 <div className="menu-card__img-wrap" style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
                   {item.image ? (
-                    <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <Image src={item.image} alt={item.name} fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 33vw" quality={60} />
                   ) : (
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "3.5rem", opacity: 0.12, color: "var(--red)" }}>
                       {item.category === "pizza" ? "P" : item.category === "fries" ? "F" : item.category === "drinks" ? "D" : item.category === "sauces" ? "S" : ""}

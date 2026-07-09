@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const IMAGES = [
   "/bg/1.jpeg",
@@ -31,13 +32,6 @@ export default function HeroSlider() {
       opacity: 0.35, 
       pointerEvents: "none"
     }}>
-      {/* Hidden images to force aggressive preloading */}
-      <div style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", opacity: 0 }}>
-        {IMAGES.map((src, i) => (
-          <img key={`preload-${i}`} src={src} alt="preload" />
-        ))}
-      </div>
-
       {IMAGES.map((src, i) => (
         <div
           key={`${src}-${i}`}
@@ -45,14 +39,12 @@ export default function HeroSlider() {
             position: "absolute",
             top: 0, left: 0,
             width: "100%", height: "100%",
-            backgroundImage: `url(${src})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 1,
             zIndex: i === index ? 1 : -1,
             visibility: i === index ? "visible" : "hidden"
           }}
-        />
+        >
+          <Image src={src} alt="Hero background" fill priority style={{ objectFit: "cover" }} quality={60} sizes="100vw" />
+        </div>
       ))}
       <div style={{
         position: "absolute",

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Send } from "lucide-react";
 import Nav from "@/components/Nav";
 import { ALL_ITEMS } from "@/lib/menu-data";
+import Image from "next/image";
 
 interface Message {
   id: string;
@@ -214,7 +215,7 @@ export default function ChatPage() {
       {/* Hover image popup — fixed, right side, vertically centred */}
       {hovered && (
         <div className="item-hover-popup">
-          <img src={hovered.image} alt={hovered.name} />
+          <Image src={hovered.image} alt={hovered.name} fill style={{ objectFit: "cover" }} sizes="150px" quality={40} />
           <div className="item-hover-popup__label">{hovered.name}</div>
         </div>
       )}

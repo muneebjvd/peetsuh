@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import Link from "next/link";
+import Image from "next/image";
 import { DEALS, PIZZAS } from "@/lib/menu-data";
 import HeroSlider from "@/components/HeroSlider";
 
@@ -111,7 +112,7 @@ export default function HomePage() {
               <Link href="/shop" key={pizza.id} className="menu-card" style={{ display: "block" }}>
                 <div className="menu-card__img-wrap" style={{ background: "var(--cream)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
                   {pizza.image ? (
-                    <img src={pizza.image} alt={pizza.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <Image src={pizza.image} alt={pizza.name} fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 33vw" quality={60} />
                   ) : (
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "3rem", opacity: 0.15 }}>P</div>
                   )}
