@@ -67,3 +67,5 @@ To access the admin dashboard, navigate to `/admin`.
 
 ## 📄 License
 This project is proprietary and built specifically for the Peetsuh brand.
+
+CREATED BY MUHAMMAD MUNEEB JAVED
