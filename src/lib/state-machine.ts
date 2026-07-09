@@ -37,6 +37,7 @@ export interface Session {
     address?: string;
   };
   currentCategory?: string;
+  currentItem?: string;
   currentSize?: string;
   pendingQuantity?: number;
   pendingItems?: string[];

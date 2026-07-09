@@ -24,7 +24,7 @@ export function signAdminToken(payload: { id: number; username: string }): strin
 
 export function verifyAdminToken(token: string): AdminTokenPayload | null {
   try {
-    return jwt.verify(token, SECRET) as AdminTokenPayload;
+    return jwt.verify(token, SECRET) as unknown as AdminTokenPayload;
   } catch {
     return null;
   }
