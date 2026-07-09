@@ -215,7 +215,7 @@ export default function ChatPage() {
       {/* Hover image popup — fixed, right side, vertically centred */}
       {hovered && (
         <div className="item-hover-popup">
-          <Image src={hovered.image} alt={hovered.name} fill style={{ objectFit: "cover" }} sizes="150px" quality={40} />
+          <Image src={hovered.image} alt={hovered.name} width={360} height={255} style={{ objectFit: "cover" }} quality={40} />
           <div className="item-hover-popup__label">{hovered.name}</div>
         </div>
       )}
