@@ -12,6 +12,7 @@ import {
 } from "./fuzzy-engine";
 import { PIZZAS, FRIES, DRINKS, SAUCES, DEALS, ALL_ITEMS, findItemById } from "./menu-data";
 import type { CartItem } from "./validation";
+import { getDb, DbOrder } from "./db";
 
 // ── State enum ────────────────────────────────────────────────
 export type DialogState =
@@ -24,7 +25,8 @@ export type DialogState =
   | "CONTACT_ADDRESS"
   | "CONFIRMATION"
   | "COMPLETED"
-  | "TABLE_BOOKING";
+  | "TABLE_BOOKING"
+  | "TRACK_ORDER_INPUT";
 
 // ── Session data ─────────────────────────────────────────────
 export interface Session {
@@ -309,6 +311,8 @@ export function processMessage(
       return handleCompleted(session, input);
     case "TABLE_BOOKING":
       return handleTableBooking(session, input);
+    case "TRACK_ORDER_INPUT":
+      return handleTrackOrderInput(session, input);
     default:
       session.state = "IDLE";
       return { text: "Something went wrong. Let me restart. How can I help you?", suggestions: ["Order pizza", "See deals", "Book a table"] };
@@ -503,6 +507,18 @@ function handleIdle(session: Session, input: string): BotResponse {
       return {
         text: "I'd love to help you book a table. Please provide your name, preferred date and time, and party size.\n\nType it all in one message (e.g. \"Ali Khan, tomorrow 7pm, 4 people\") or call us at 0300-1234567.",
         suggestions: ["Call instead", "Cancel"],
+      };
+
+    case "TRACK_ORDER":
+      session.state = "TRACK_ORDER_INPUT";
+      return {
+        text: "I can help you track your order! Please enter your 7-character Order Number (e.g., A1B2C3D):",
+      };
+
+    case "APPRECIATION":
+      return {
+        text: "You're very welcome! We're always happy to help. Let us know if you need anything else! 😊",
+        suggestions: ["Order now", "Track order", "See deals"],
       };
 
     default:
@@ -1005,6 +1021,51 @@ function handleTableBooking(session: Session, input: string): BotResponse {
     text: `Thank you, ${nameStr || "Guest"}! We've noted your booking request for ${partySizeStr} person(s). You will receive a confirmation shortly, or you can call us at 0300-1234567 for immediate assistance.`,
     suggestions: ["Place an order", "See deals"],
     finalOrder,
+  };
+}
+
+function handleTrackOrderInput(session: Session, input: string): BotResponse {
+  const query = input.trim().toUpperCase();
+  if (query.length < 7) {
+    return {
+      text: "That doesn't look like a valid order number. Please enter the full order number or the last 7 digits.",
+      suggestions: ["Cancel"]
+    };
+  }
+
+  let order: DbOrder | undefined;
+  try {
+    const db = getDb();
+    if (query.length === 7) {
+      order = db.prepare(`SELECT * FROM orders WHERE order_ref LIKE ?`).get(`%${query}`) as DbOrder | undefined;
+    } else {
+      order = db.prepare(`SELECT * FROM orders WHERE order_ref = ?`).get(query) as DbOrder | undefined;
+    }
+  } catch (err) {
+    console.error("Order tracking error in bot:", err);
+  }
+
+  session.state = "IDLE";
+  if (!order) {
+    return {
+      text: "I couldn't find any order with that tracking number. Let me know if you need help with anything else!",
+      suggestions: ["Track again", "Place an order"]
+    };
+  }
+
+  let statusMsg = "";
+  switch (order.status) {
+    case "new": statusMsg = "Received 📝"; break;
+    case "preparing": statusMsg = "Preparing 🧑‍🍳"; break;
+    case "out_for_delivery": statusMsg = "Out for Delivery 🛵"; break;
+    case "done": statusMsg = "Completed / Delivered ✅"; break;
+    case "cancelled": statusMsg = "Cancelled ❌"; break;
+    default: statusMsg = order.status;
+  }
+
+  return {
+    text: `Here is the status for your order **${order.order_ref}**:\n\n**${statusMsg}**\n\nIs there anything else I can help you with?`,
+    suggestions: ["Place an order", "Show menu"]
   };
 }
 

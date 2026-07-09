@@ -28,6 +28,7 @@ export default function Nav() {
           <li><Link href="/shop">Menu</Link></li>
           <li><Link href="/chat">Order via Chat</Link></li>
           <li><Link href="/#deals">Deals</Link></li>
+          <li><Link href="/track">Track Order</Link></li>
         </ul>
 
         <div className="nav__actions">
@@ -52,6 +53,7 @@ export default function Nav() {
             <li><Link href="/shop" onClick={() => setMobileOpen(false)} style={{ color: "var(--white)", fontWeight: 600, fontSize: "1.2rem", display: "block" }}>Menu</Link></li>
             <li><Link href="/chat" onClick={() => setMobileOpen(false)} style={{ color: "var(--white)", fontWeight: 600, fontSize: "1.2rem", display: "block" }}>Order via Chat</Link></li>
             <li><Link href="/#deals" onClick={() => setMobileOpen(false)} style={{ color: "var(--white)", fontWeight: 600, fontSize: "1.2rem", display: "block" }}>Deals</Link></li>
+            <li><Link href="/track" onClick={() => setMobileOpen(false)} style={{ color: "var(--white)", fontWeight: 600, fontSize: "1.2rem", display: "block" }}>Track Order</Link></li>
           </ul>
         </div>
       )}

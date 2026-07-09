@@ -7,7 +7,7 @@ interface Order {
   id: number;
   order_ref: string;
   channel: "chat" | "shop";
-  status: "new" | "preparing" | "done" | "cancelled";
+  status: "new" | "preparing" | "out_for_delivery" | "done" | "cancelled";
   customer_name: string;
   customer_phone: string;
   customer_address: string;
@@ -16,7 +16,7 @@ interface Order {
   created_at: string;
 }
 
-const STATUS_OPTIONS = ["new", "preparing", "done", "cancelled"] as const;
+const STATUS_OPTIONS = ["new", "preparing", "out_for_delivery", "done", "cancelled"] as const;
 
 function StatusBadge({ status }: { status: Order["status"] }) {
   return <span className={`status-badge status-badge--${status}`}>{status}</span>;

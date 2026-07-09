@@ -33,13 +33,39 @@ export function getDb(): Database.Database {
 }
 
 function initSchema(db: Database.Database): void {
+  const tableInfo = db.prepare(`SELECT sql FROM sqlite_master WHERE type='table' AND name='orders'`).get() as any;
+  if (tableInfo && !tableInfo.sql.includes('out_for_delivery')) {
+    db.exec(`
+      PRAGMA foreign_keys=off;
+      BEGIN TRANSACTION;
+      CREATE TABLE orders_new (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_ref   TEXT    NOT NULL UNIQUE,
+        channel     TEXT    NOT NULL CHECK(channel IN ('chat', 'shop')),
+        status      TEXT    NOT NULL DEFAULT 'new' CHECK(status IN ('new', 'preparing', 'out_for_delivery', 'done', 'cancelled')),
+        customer_name    TEXT NOT NULL,
+        customer_phone   TEXT NOT NULL,
+        customer_address TEXT NOT NULL,
+        items_json  TEXT    NOT NULL,
+        total       INTEGER NOT NULL,
+        created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+        updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+      );
+      INSERT INTO orders_new SELECT * FROM orders;
+      DROP TABLE orders;
+      ALTER TABLE orders_new RENAME TO orders;
+      COMMIT;
+      PRAGMA foreign_keys=on;
+    `);
+  }
+
   db.exec(`
     -- Orders table
     CREATE TABLE IF NOT EXISTS orders (
       id          INTEGER PRIMARY KEY AUTOINCREMENT,
       order_ref   TEXT    NOT NULL UNIQUE,
       channel     TEXT    NOT NULL CHECK(channel IN ('chat', 'shop')),
-      status      TEXT    NOT NULL DEFAULT 'new' CHECK(status IN ('new', 'preparing', 'done', 'cancelled')),
+      status      TEXT    NOT NULL DEFAULT 'new' CHECK(status IN ('new', 'preparing', 'out_for_delivery', 'done', 'cancelled')),
       customer_name    TEXT NOT NULL,
       customer_phone   TEXT NOT NULL,
       customer_address TEXT NOT NULL,
@@ -73,12 +99,12 @@ function initSchema(db: Database.Database): void {
   `);
 }
 
-// ── Order operations ─────────────────────────────────────────
+// ── Order operations ──────────────────────────────────────────────────────────
 export interface DbOrder {
   id: number;
   order_ref: string;
   channel: "chat" | "shop";
-  status: "new" | "preparing" | "done" | "cancelled";
+  status: "new" | "preparing" | "out_for_delivery" | "done" | "cancelled";
   customer_name: string;
   customer_phone: string;
   customer_address: string;
@@ -122,7 +148,7 @@ export function getOrderByRef(ref: string): DbOrder | undefined {
 
 export function updateOrderStatus(
   id: number,
-  status: "new" | "preparing" | "done" | "cancelled"
+  status: "new" | "preparing" | "out_for_delivery" | "done" | "cancelled"
 ): void {
   const db = getDb();
   db.prepare(

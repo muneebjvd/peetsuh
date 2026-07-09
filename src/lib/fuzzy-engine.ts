@@ -113,6 +113,16 @@ export const INTENTS: Intent[] = [
     priority: 5,
     triggers: ["book", "table", "reservation", "reserve", "seat", "dine in", "dine-in", "eat here", "eat in", "sitting space", "book a table", "need a table", "party booking", "reserve a spot", "coming over", "visiting", "table for"],
   },
+  {
+    id: "TRACK_ORDER",
+    priority: 5,
+    triggers: ["track", "where is my order", "status", "track order", "track my order", "order status"],
+  },
+  {
+    id: "APPRECIATION",
+    priority: 5,
+    triggers: ["thank you", "thanks", "great", "welcome", "you are best", "best", "awesome", "good job", "appreciate", "thank"],
+  },
   // ── Categories (used in CATEGORY_SELECTION state)
   {
     id: "CAT_PIZZA",
