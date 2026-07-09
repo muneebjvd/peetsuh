@@ -110,7 +110,7 @@ function ItemModal({ item, onClose }: ItemModalProps) {
         <p style={{ color: "var(--grey-mid)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>{item.description}</p>
 
         {isBooking ? (
-          bookingState === "form" ? (
+          bookingState !== "success" ? (
             <div>
               <p style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.5rem" }}>Name</p>
               <input value={name} onChange={e=>setName(e.target.value)} style={{ width: "100%", padding: "0.75rem", marginBottom: "1rem", border: "1px solid var(--grey)", borderRadius: "4px" }} />
